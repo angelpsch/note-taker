@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const store = require("../db/store");
+const store = require("../../store");
 
 
 router.get("/notes", (req, res) => {
@@ -9,6 +9,7 @@ router.get("/notes", (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
+
 router.post("/notes", (req, res) => {
   store
     .addNote(req.body)
@@ -16,7 +17,7 @@ router.post("/notes", (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
-// To delete note
+
 router.delete("/notes/:id", (req, res) => {
   store
     .removeNote(req.params.id)
