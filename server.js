@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use("/api", apiRoutes);
-app.use("/", htmlRoutes);
+app.use("", htmlRoutes);
 
 //routes
 const apiRoutes = require("./routes/apiRoutes");
