@@ -1,28 +1,37 @@
+const notesData = require("../db/db.json");
 const router = require("express").Router();
-const store = require("../../store");
+const fs = require("fs");
 
 
 router.get("/notes", (req, res) => {
-  store
-    .getNotes()
-    .then((notes) => res.json(notes))
-    .catch((err) => res.status(500).json(err));
-});
-
-
-router.post("/notes", (req, res) => {
-  store
-    .addNote(req.body)
-    .then((note) => res.json(note))
-    .catch((err) => res.status(500).json(err));
-});
+  res.json(notesData);
+})
+  .post("/notes", (req, res) => {
+    notesData.forEach(note => {
+      note.id++;
+    });
+    const newNote = req.body;
+    newNote.id = 1;
+    notesData.unshift(newNote);
+    fs.writeFile("./db/db.json", JSON.stringify(notesData), err => {
+      if (err) throw err;
+      console.log("File saved");
+    });
+    res.end();
+  });
 
 
 router.delete("/notes/:id", (req, res) => {
-  store
-    .removeNote(req.params.id)
-    .then(() => res.json({ ok: true }))
-    .catch((err) => res.status(500).json(err));
+  const chosenId = req.params.id - 1;
+  notesData.splice(chosenId, 1);
+  for (let i = chosenId; i < notesData.length; i++) {
+    notesData[i].id--;
+  }
+  fs.writeFile("./db/db.json", JSON.stringify(notesData), err => {
+    if (err) throw err;
+    console.log("File deleted");
+  });
+  res.end();
 });
 
 module.exports = router;
