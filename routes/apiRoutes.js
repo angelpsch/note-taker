@@ -1,19 +1,19 @@
-const notesData = require("../db/db.json");
+const notes = require("../db/db.json");
 const router = require("express").Router();
 const fs = require("fs");
 
 
 router.get("/notes", (req, res) => {
-  res.json(notesData);
+  res.json(notes);
 })
   .post("/notes", (req, res) => {
-    notesData.forEach(note => {
+    notes.forEach(note => {
       note.id++;
     });
     const newNote = req.body;
     newNote.id = 1;
-    notesData.unshift(newNote);
-    fs.writeFile("./db/db.json", JSON.stringify(notesData), err => {
+    notes.unshift(newNote);
+    fs.writeFile("./db/db.json", JSON.stringify(notes), err => {
       if (err) throw err;
       console.log("File saved");
     });
@@ -23,11 +23,11 @@ router.get("/notes", (req, res) => {
 
 router.delete("/notes/:id", (req, res) => {
   const chosenId = req.params.id - 1;
-  notesData.splice(chosenId, 1);
-  for (let i = chosenId; i < notesData.length; i++) {
-    notesData[i].id--;
+  notes.splice(chosenId, 1);
+  for (let i = chosenId; i < notes.length; i++) {
+    notes[i].id--;
   }
-  fs.writeFile("./db/db.json", JSON.stringify(notesData), err => {
+  fs.writeFile("./db/db.json", JSON.stringify(notes), err => {
     if (err) throw err;
     console.log("File deleted");
   });
